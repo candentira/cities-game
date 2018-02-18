@@ -1,0 +1,12 @@
+.error {
+  color: red;
+}
+
+.mic {
+  border-radius: 10px;
+}
+
+.mic img {
+  height: 15px;
+  width: 15px;
+}

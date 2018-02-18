@@ -1,0 +1,10 @@
+<div>
+  <input [(ngModel)]="city.name" (keyup.enter)="play(city.name)" placeholder="name">
+  <button class="mic" (click)="nameCity()"><img src="/assets/mic.ico"></button>
+</div>
+<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
+<div *ngFor="let city of citiesList">
+  <span *ngIf="city.author">Пользователь:</span>
+  <span *ngIf="!city.author">Компьютер:</span>
+  {{city.name}}
+</div>
