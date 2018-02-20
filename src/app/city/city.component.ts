@@ -1,5 +1,7 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { City } from '../city';
+import { cityList } from './citiesList'
+import { Errors } from './errorMessages'
 
 interface IWindow extends Window {
     webkitSpeechRecognition: any;
@@ -11,40 +13,37 @@ interface IWindow extends Window {
   templateUrl: './city.component.html',
   styleUrls: ['./city.component.css']
 })
-export class CityComponent implements OnInit {
-  const ERROR_ORDER: string = "Сейчас не ваша очередь!";
-  const ERROR_RULE_VIOLATION_LETTER: string = "Название города должно начинаться " +
-    "на последнюю букву названия последнего названного города!";
-  const ERROR_RULE_VIOLATION_REPEAT: string = "Нельзя называть уже ранее " +
-    "названные города!";
+export class CityComponent{
 
   city: City = {};
   errorMessage: string;
+  playEnd: boolean;
 
-  citiesList: City[] = [
+  namedCities: City[] = [
     {name: 'Минск', author: true},
     {name: 'Калининград', author: false},
     {name: 'Денвер', author: true},
     {name: 'Рио-Де-Жанейро', author: false}
   ];
 
-  constructor(private zone: NgZone) { }
-
-  ngOnInit() {
+  constructor(private zone: NgZone) {
+    this.names = cityList;
   }
 
   play(cityName: string) {
-    const lastCity = this.citiesList[this.citiesList.length - 1];
+    const lastCity = this.namedCities[this.namedCities.length - 1];
     if(lastCity.author){
-      this.errorMessage = this.ERROR_ORDER;
-    } else if(this.citiesList.includes(cityName)) {
-      this.errorMessage = this.ERROR_RULE_VIOLATION_REPEAT;
+      this.errorMessage = Errors.ERROR_ORDER;
+    } else if(this.namedCities.includes(cityName)) {
+      this.errorMessage = Errors.ERROR_RULE_VIOLATION_REPEAT;
     } else if(cityName[0].toLowerCase() !=
       lastCity.name[lastCity.name.length - 1].toLowerCase()) {
-      this.errorMessage = this.ERROR_RULE_VIOLATION_LETTER;
+      this.errorMessage = Errors.ERROR_RULE_VIOLATION_LETTER;
     } else {
-      this.userPlays(cityName);
-      this.citiesList.push(this.compPlays(this.citiesList));
+      this.errorMessage = null;
+      this.city.name = "";
+      this.namedCities.push(this.userPlays(cityName);
+      this.namedCities.push(this.compPlays(this.namedCities));
     }
   }
 
@@ -53,15 +52,31 @@ export class CityComponent implements OnInit {
       name: cityName.trim(),
       author: true
     };
-    this.city.name = "";
-    this.citiesList.push(city);
+    return city;
   }
 
-  compPlays(citiesList: string[]): City{
+  compPlays(namedCities: string[]): City{
+    var lastCityName = namedCities[namedCities.length - 1].name;
+    var lastLetter = lastCityName[lastCityName.length - 1];
+    var nextCity;
+    do{
+      nextCity = this.names[lastLetter.toUpperCase()].pop();
+      if(!nextCity) {
+        this.playEnd = true;
+        return {
+          name: "",
+          author: true
+        };
+      }
+    } while (nextCity && this.isNamed(nextCity, namedCities));
     return {
-      name: "Новый город",
+      name: nextCity,
       author: false
-    };;
+    };
+  }
+
+  isNamed(nextCity: string, namedCities: string[]) {
+    return namedCities.filter((city) => {return city.name == nextCity}).length;
   }
 
   nameCity(): void {

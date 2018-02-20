@@ -3,8 +3,16 @@
   <button class="mic" (click)="nameCity()"><img src="/assets/mic.ico"></button>
 </div>
 <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>
-<div *ngFor="let city of citiesList">
+<div *ngFor="let city of namedCities">
   <span *ngIf="city.author">Пользователь:</span>
   <span *ngIf="!city.author">Компьютер:</span>
   {{city.name}}
+</div>
+<div class="gameEnd" *ngIf="playEnd">
+  Игра окончена.
+  Выйграл
+  <span>
+    <span *ngIf="namedCities[namedCities.length - 1].author">Пользователь</span>
+    <span *ngIf="!namedCities[namedCities.length - 1].author">Компьютер</span>
+  </span>
 </div>

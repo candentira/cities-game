@@ -2,6 +2,10 @@
   color: red;
 }
 
+.gameEnd {
+  color: green;
+}
+
 .mic {
   border-radius: 10px;
 }
